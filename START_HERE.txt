@@ -1,0 +1,48 @@
+COLLEGE SPORTS TOURNAMENT MANAGER — START HERE
+
+REQUIREMENTS
+- Node.js 18 or newer
+- MongoDB Atlas account (recommended)
+
+1) SET UP MONGODB ATLAS
+- Sign in at https://cloud.mongodb.com and create a free cluster.
+- Database Access: create a database user and password. This is NOT your Atlas website password.
+- Network Access: add your current IP address. For a temporary learning setup, Atlas offers 0.0.0.0/0, but it exposes access attempts from any IP; use it only if you understand the risk and remove it when finished.
+- Cluster > Connect > Drivers > Node.js: copy the mongodb+srv connection string.
+
+2) CONFIGURE THE SERVER
+- Open the server folder. Copy .env.example to a new file named .env.
+- Put the Atlas connection string into MONGODB_URI. Replace <db_password> with the database user's password. URL-encode special characters in the password. Keep the database name college_sports_tournament.
+- Set JWT_SECRET to a long random secret (at least 32 characters).
+- Set ADMIN_EMAIL and ADMIN_PASSWORD to the first administrator login you want. Use a strong password and change it from the example.
+- Never upload/share server/.env or commit it to source control.
+
+3) INSTALL AND START BACKEND (PowerShell)
+cd server
+npm.cmd install
+npm.cmd run dev
+Keep this terminal open. Look for “MongoDB Atlas connected.”
+
+4) INSTALL AND START FRONTEND
+Open a SECOND terminal in the client folder:
+npm.cmd install
+npm.cmd run dev
+Open http://localhost:5173
+
+LOGIN
+- Administrator: use ADMIN_EMAIL and ADMIN_PASSWORD from server/.env. The server creates this admin on its first successful Atlas connection.
+- Standard user: use Register on the login screen. Registration always creates role=user; it cannot create an admin.
+- Admin can manage records and send announcements; standard users can view protected records but server-side write actions are blocked.
+
+TROUBLESHOOTING
+- If login says MongoDB is not connected, check server/.env, Atlas Network Access, the database user credentials, and the terminal output.
+- If password has @, :, /, #, ?, or other reserved URL characters, URL-encode it in MONGODB_URI.
+- If npm.ps1 is blocked in PowerShell, use npm.cmd as shown above.
+- Do not share Atlas credentials, JWT_SECRET, SMTP credentials, or your .env file.
+
+AUTHENTICATION NOTES
+- Open the app to see the login screen. Register a standard user or sign in as the administrator configured in server/.env.
+- The admin account is created automatically after a successful MongoDB connection.
+- Login and registration create an 8-hour JWT session whose SHA-256 token hash is stored in MongoDB AuthSessions. Logout revokes that database session.
+- JWT itself is kept in the browser localStorage; the server stores only its hash. This is safer than storing the raw bearer token in MongoDB.
+- Standard registration cannot create an administrator. Never share server/.env or commit it to source control.
